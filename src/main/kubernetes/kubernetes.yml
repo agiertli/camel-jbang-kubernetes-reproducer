@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    camel.apache.org/integration: demo
+    app.kubernetes.io/runtime: camel
+  name: demo
+spec:
+  selector:
+    matchLabels:
+      camel.apache.org/integration: demo
+  template:
+    metadata:
+      labels:
+        camel.apache.org/integration: demo
+    spec:
+      containers:
+      - image: demo:1.0-SNAPSHOT
+        name: demo
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    camel.apache.org/integration: demo
+    app.kubernetes.io/runtime: camel
+  name: demo
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    camel.apache.org/integration: demo
+  type: ClusterIP
